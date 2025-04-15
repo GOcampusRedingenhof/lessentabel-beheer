@@ -1,0 +1,644 @@
+/**
+ * Dynamische Lessentabellen v2.1
+ * CSS Stylesheet
+ * @copyright 2025 GO Campus Redingenhof
+ */
+
+/* Reset en basisstijlen */
+.lessentabellen-root {
+  --transition-speed: 0.3s;
+  --border-radius: 12px;
+  --shadow-default: 0 8px 24px rgba(0,0,0,0.08);
+  color-scheme: light dark;
+  font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
+  width: 100%;
+  line-height: 1.5;
+}
+
+.lessentabellen-root * {
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Grid container */
+#domains-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 2rem;
+  padding: 2.5rem;
+  box-sizing: border-box;
+  min-height: 400px;
+  position: relative;
+  max-width: 1400px;
+  margin: 0 auto;
+  background: #f8f8f8;
+  align-items: stretch;
+}
+
+.loader-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px;
+  height: 60px;
+  border: 6px solid rgba(0,0,0,0.1);
+  border-radius: 50%;
+  border-top-color: var(--domain-base, #333);
+  animation: spin 1s linear infinite;
+  z-index: 0;
+}
+
+@keyframes spin {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Domein blokken */
+.domain-block {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #fff;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: var(--shadow-default);
+  transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(0,0,0,0.08);
+}
+
+.domain-block:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+}
+
+.domain-block h2 {
+  margin: 0 0 1.5rem 0 !important;
+  text-transform: uppercase;
+  color: var(--domain-base);
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  position: relative;
+  display: inline-block;
+}
+
+.domain-block h2::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 50px;
+  height: 4px;
+  background: var(--domain-base);
+  border-radius: 2px;
+}
+
+/* Graad containers */
+.graad-container {
+  background: #fff;
+  border-left: 6px solid var(--domain-base);
+  border-radius: 10px;
+  margin-bottom: 1.5rem !important;
+  padding: 1.5rem !important;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+}
+
+.graad-container:last-child {
+  margin-bottom: 0 !important;
+}
+
+.graad-container h3 {
+  margin: 0 0 0.75rem 0 !important;
+  text-transform: uppercase;
+  color: var(--domain-base);
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* Finaliteit blokken */
+.finaliteit-blok {
+  background: #ffffff;
+  margin: 0.75rem 0 !important;
+  border-radius: var(--border-radius);
+  padding: 0.75rem 1rem !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+.finaliteit-blok h4 {
+  margin: 0.5rem 0 !important;
+  color: var(--domain-mid);
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.finaliteit-blok ul {
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0.5rem 0 0 0 !important;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+/* Knoppen en links */
+.finaliteit-blok li a {
+  background: var(--domain-base);
+  color: #fff !important;
+  padding: 0.6rem 1rem !important;
+  border-radius: 6px;
+  text-decoration: none !important;
+  transition: all var(--transition-speed);
+  font-size: 0.95rem;
+  display: inline-block;
+  line-height: 1.3;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.12);
+  position: relative;
+  overflow: hidden;
+}
+
+.finaliteit-blok li a::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.1);
+  opacity: 0;
+  transition: opacity var(--transition-speed);
+}
+
+.finaliteit-blok li a:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.finaliteit-blok li a:hover::after {
+  opacity: 1;
+}
+
+.finaliteit-blok li a:focus {
+  outline: 3px solid rgba(0,0,0,0.1);
+  outline-offset: 2px;
+}
+
+/* Slide-in paneel */
+#slidein {
+  position: fixed;
+  top: var(--dynamic-top, 120px);
+  right: 0;
+  width: 90%;
+  max-width: 800px;
+  height: calc(100% - var(--dynamic-top, 120px));
+  background: #fff;
+  color: #333;
+  padding: 2.5rem !important;
+  border-radius: 18px 0 0 18px;
+  box-shadow: -4px 0 25px rgba(0,0,0,0.25);
+  overflow-y: auto;
+  transform: translateX(100%);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 99999;
+  box-sizing: border-box;
+  overscroll-behavior: contain;
+}
+
+#slidein.open {
+  transform: translateX(0) !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Overlay met blur */
+#overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(2px);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+  z-index: 99998;
+}
+
+#overlay.show {
+  opacity: 1 !important;
+  pointer-events: all !important;
+  visibility: visible !important;
+}
+
+/* Close knop */
+.close-btn {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  font-size: 1.75rem;
+  background: rgba(0,0,0,0.1);
+  color: #333;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.close-btn:hover {
+  background: rgba(0,0,0,0.15);
+  transform: scale(1.05);
+}
+
+/* Actie-knoppen */
+.action-buttons {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 1.5rem 0 !important;
+}
+
+.action-buttons a,
+.action-buttons button {
+  background: var(--domain-mid);
+  color: #fff;
+  padding: 0.75rem 1.25rem !important;
+  border-radius: 6px;
+  border: none;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+  font-size: 1rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.action-buttons a svg,
+.action-buttons button svg {
+  width: 18px;
+  height: 18px;
+}
+
+.action-buttons a:hover,
+.action-buttons button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.action-buttons a:active,
+.action-buttons button:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Lessentabel stijlen */
+#lessentabel-container {
+  position: relative;
+  overflow-x: auto;
+  margin: 0 -1rem;
+  padding: 0 1rem;
+}
+
+#lessentabel-container table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.95rem;
+  margin: 1rem 0 !important;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+#lessentabel-container th,
+#lessentabel-container td {
+  padding: 0.75rem 1rem !important;
+  border-bottom: 1px solid #e5e5e5;
+  text-align: center;
+  line-height: 1.4;
+}
+
+#lessentabel-container th:first-child,
+#lessentabel-container td:first-child {
+  text-align: left;
+  font-weight: 500;
+}
+
+#lessentabel-container thead tr {
+  background: linear-gradient(to bottom, var(--domain-base), var(--domain-mid));
+  color: #fff;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.2);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+#lessentabel-container th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+#lessentabel-container tbody tr:nth-child(even) {
+  background-color: rgba(0,0,0,0.02);
+}
+
+#lessentabel-container tbody tr:hover {
+  background-color: var(--hover-row) !important;
+}
+
+#lessentabel-container .stage-row {
+  font-weight: 600;
+  border-top: 2px solid var(--domain-light1);
+}
+
+/* Details Styling */
+.footnotes {
+  margin-top: 1.5rem !important;
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--domain-base);
+  line-height: 1.6;
+  padding: 1rem !important;
+  background: var(--domain-light1);
+  border-radius: var(--border-radius);
+  opacity: 0.9;
+}
+
+#opleiding-beschrijving {
+  text-align: center;
+  line-height: 1.6;
+  margin-bottom: 1.5rem !important;
+  font-size: 1.05rem;
+  max-width: 700px;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+#opleiding-titel {
+  text-align: center;
+  margin: 0.5rem 0 1.25rem !important;
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: var(--domain-base);
+  position: relative;
+  padding-bottom: 0.75rem;
+}
+
+#opleiding-titel::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background: var(--domain-base);
+  border-radius: 2px;
+}
+
+/* Print stijlen */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 1.5cm;
+  }
+  
+  body * {
+    visibility: hidden;
+  }
+  
+  .lessentabellen-wrapper,
+  .lessentabellen-wrapper * {
+    visibility: visible;
+  }
+  
+  .lessentabellen-wrapper {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    height: auto !important;
+    padding: 0;
+    line-height: 1.4;
+    font-size: 12pt;
+    color: #000 !important;
+    background: #fff !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+  
+  /* Verbeterde logo positionering */
+  .logo-print {
+    display: block !important;
+    max-width: 150px !important;
+    height: auto;
+    margin: 0 0 2rem 0 !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  
+  /* Opleiding titel centreren en ruimte maken voor logo */
+  #opleiding-titel {
+    text-align: center;
+    margin: 5rem 0 1rem 0 !important;
+    font-size: 18pt;
+    padding-top: 1rem;
+  }
+  
+  /* Onderaan plaatsen van datum en quote */
+  .datum {
+    display: block !important;
+    text-align: right;
+    font-weight: normal;
+    font-size: 9pt;
+    position: absolute;
+    bottom: 1rem;
+    right: 0;
+    margin: 0 !important;
+  }
+  
+  .quote {
+    display: block !important;
+    text-align: center;
+    font-style: italic;
+    font-size: 11pt;
+    position: absolute;
+    bottom: 1rem;
+    left: 0;
+    font-weight: bold;
+    margin: 0 !important;
+  }
+  
+  .close-btn,
+  .action-buttons {
+    display: none !important;
+  }
+  
+  #lessentabel-container table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 2rem !important;
+  }
+  
+  #lessentabel-container th {
+    background: #f0f0f0 !important;
+    color: #000 !important;
+    text-shadow: none !important;
+    border: 1px solid #ddd;
+    font-weight: bold;
+    padding: 0.5rem !important;
+  }
+  
+  #lessentabel-container td {
+    border: 1px solid #ddd;
+    padding: 0.5rem !important;
+  }
+  
+  #opleiding-beschrijving {
+    font-size: 11pt;
+    margin-bottom: 2rem !important;
+  }
+  
+  .footnotes {
+    font-size: 9pt;
+    background: none !important;
+    border-top: 1px solid #ddd;
+    padding-top: 0.5rem !important;
+    margin-top: 2rem !important;
+  }
+  
+  /* Grijswaarde print optimalisatie */
+  @media print and (monochrome) {
+    #lessentabel-container th {
+      background: #ddd !important;
+    }
+    
+    #lessentabel-container tr:nth-child(even) {
+      background: #f5f5f5 !important;
+    }
+  }
+}
+
+/* Skeleton loaders en meldingen */
+.skeleton {
+  background: linear-gradient(90deg, #eee 25%, #f5f5f5 50%, #eee 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: 4px;
+}
+
+@keyframes skeleton-loading {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.not-found-message {
+  text-align: center;
+  padding: 3rem 1rem !important;
+  font-size: 1.2rem;
+  color: #666;
+}
+
+.error-message {
+  background: rgba(255,0,0,0.05);
+  border-left: 4px solid #ff3b30;
+  color: #d32f2f;
+  padding: 1rem !important;
+  margin: 1rem 0 !important;
+  border-radius: 4px;
+}
+
+/* Responsive aanpassingen */
+@media (max-width: 768px) {
+  #domains-container {
+    grid-template-columns: 1fr;
+    padding: 1.5rem;
+  }
+  
+  #slidein {
+    width: 100%;
+    border-radius: 18px 18px 0 0;
+    position: fixed;
+    bottom: 0;
+    top: auto !important; 
+    height: 85% !important;
+    max-height: 85vh;
+    transform: translateY(100%);
+    z-index: 999999; /* Extra hoge z-index voor mobiel */
+  }
+  
+  #slidein.open {
+    transform: translateY(0) !important;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+  }
+  
+  .domain-block h2 {
+    font-size: 1.5rem;
+  }
+  
+  #opleiding-titel {
+    font-size: 1.75rem;
+  }
+
+  /* Zorg dat de close button altijd zichtbaar is */
+  .close-btn {
+    position: sticky;
+    top: 0.5rem;
+    right: 0.5rem;
+    float: right;
+    z-index: 10;
+    background: var(--domain-base);
+    color: white;
+  }
+}
+
+/* Toegankelijkheid */
+:focus-visible {
+  outline: 3px solid var(--domain-base);
+  outline-offset: 3px;
+}
+
+/* Print-elementen */
+.logo-print {
+  display: none;
+  max-width: 150px;
+}
+
+.datum {
+  display: none;
+}
+
+.quote {
+  display: none;
+}
+
+/* Versie indicator */
+.version-indicator {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(0,0,0,0.5);
+  color: white;
+  padding: 5px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  z-index: 99990;
+  opacity: 0.6;
+}
